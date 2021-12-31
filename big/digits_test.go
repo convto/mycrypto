@@ -5,6 +5,66 @@ import (
 	"testing"
 )
 
+func Test_karatsubaLen(t *testing.T) {
+	type args struct {
+		n         int
+		threshold int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "n = 40",
+			args: args{
+				n:         40,
+				threshold: karatsubaThreshold,
+			},
+			want: 40,
+		},
+		{
+			name: "n = 200",
+			args: args{
+				n:         200,
+				threshold: karatsubaThreshold,
+			},
+			want: 200,
+		},
+		{
+			name: "n = 500",
+			args: args{
+				n:         500,
+				threshold: karatsubaThreshold,
+			},
+			want: 512,
+		},
+		{
+			name: "n = 900",
+			args: args{
+				n:         900,
+				threshold: karatsubaThreshold,
+			},
+			want: 928,
+		},
+		{
+			name: "n = 999",
+			args: args{
+				n:         999,
+				threshold: karatsubaThreshold,
+			},
+			want: 1024,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := karatsubaLen(tt.args.n, tt.args.threshold); got != tt.want {
+				t.Errorf("karatsubaLen() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_norm(t *testing.T) {
 	type args struct {
 		abs digits
@@ -102,6 +162,62 @@ func Test_cmp(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := cmp(tt.args.x, tt.args.y); got != tt.want {
 				t.Errorf("cmp() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_leftPad(t *testing.T) {
+	type args struct {
+		x digits
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want digits
+	}{
+		{
+			name: "left 5 pad",
+			args: args{
+				x: digits{1, 2, 3, 4, 5, 6, 7, 8, 9},
+				n: 5,
+			},
+			want: digits{0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := leftPad(tt.args.x, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("leftPad() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_rightPad(t *testing.T) {
+	type args struct {
+		x digits
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want digits
+	}{
+		{
+			name: "right 5 pad",
+			args: args{
+				x: digits{1, 2, 3, 4, 5, 6, 7, 8, 9},
+				n: 5,
+			},
+			want: digits{1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := rightPad(tt.args.x, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("rightPad() = %v, want %v", got, tt.want)
 			}
 		})
 	}

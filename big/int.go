@@ -2,6 +2,7 @@ package big
 
 import (
 	"fmt"
+	"strconv"
 )
 
 // Int は巨大な整数演算をする型です
@@ -33,6 +34,30 @@ func NewInt(x int64) *Int {
 		neg: neg,
 		abs: abs,
 	}
+}
+
+// SetString は入力を10進数としてscanします
+// 予期しない入力によって読み取りに失敗するとpanicします
+func (b *Int) SetString(s string) *Int {
+	neg := false
+	switch s[0] {
+	case '-':
+		neg = true
+		s = s[1:]
+	case '+':
+		s = s[1:]
+	}
+	abs := make(digits, len(s))
+	for i, r := range s {
+		d, err := strconv.ParseUint(string(r), 10, 8)
+		if err != nil {
+			panic(err)
+		}
+		abs[i] = uint8(d)
+	}
+	b.abs = abs
+	b.neg = neg
+	return b
 }
 
 func (b *Int) String() string {
